@@ -1,7 +1,7 @@
 {
     "name": "@lonewolfyx/build",
     "type": "module",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "packageManager": "pnpm@10.28.2",
     "description": "A lightweight CLI tool to simplify frontend builds and artifact packaging. It acts as a shortcut for `pnpm build` / `npm run build` and automatically compresses the `dist` directory into an archive for easy delivery.",
     "author": "lonewolfyx",
