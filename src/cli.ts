@@ -1,5 +1,11 @@
+import process from 'node:process'
+import { intro, log, outro } from '@clack/prompts'
 import { createMain, defineCommand } from 'citty'
+import { zipBuildOutput } from '@/archive.ts'
+import { commandArgs } from '@/args.ts'
+import { resolveBuildScript, runBuildScript } from '@/scripts.ts'
 import { description, name, version } from '../package.json'
+import { resolveConfig } from './config'
 
 const command = defineCommand({
     meta: {
@@ -7,25 +13,26 @@ const command = defineCommand({
         version,
         description,
     },
-    setup() {
-        console.log('Setup')
-    },
-    cleanup() {
-        console.log('Cleanup')
-    },
-    args: {
-        cwd: {
-            type: 'string',
-            description: 'Current working directory',
-            alias: 'c',
-            default: process.cwd(),
-        },
-    },
-    subCommands: {
-        build: () => import('./commands/build.ts').then(r => r.default),
-    },
-    run({ args }) {
-        console.log(args)
+    args: commandArgs,
+    async run({ args }) {
+        intro('@lonewolfyx/build')
+
+        try {
+            log.info(`Reading project config from ${args.cwd}`)
+            const config = await resolveConfig(args)
+
+            log.success(`Detected ${config.package_manager} with ${config.scripts.length} script(s).`)
+
+            const script = await resolveBuildScript(config.scripts)
+            await runBuildScript(config, script)
+
+            const artifactPath = await zipBuildOutput(config)
+            outro(`Build artifact created: ${artifactPath}`)
+        }
+        catch (error) {
+            log.error(error instanceof Error ? error.message : String(error))
+            process.exit(1)
+        }
     },
 })
 
