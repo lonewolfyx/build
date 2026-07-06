@@ -1,0 +1,68 @@
+{
+    "name": "@lonewolfyx/build",
+    "type": "module",
+    "version": "0.0.0",
+    "packageManager": "pnpm@10.28.2",
+    "description": "A lightweight CLI tool to simplify frontend builds and artifact packaging. It acts as a shortcut for `pnpm build` / `npm run build` and automatically compresses the `dist` directory into an archive for easy delivery.",
+    "author": "lonewolfyx",
+    "license": "MIT",
+    "homepage": "https://github.com/lonewolfyx/build",
+    "bugs": {
+        "url": "https://github.com/lonewolfyx/build/issues"
+    },
+    "keywords": [
+        "build"
+    ],
+    "exports": {
+        ".": "./dist/cli.mjs",
+        "./package.json": "./package.json"
+    },
+    "types": "./dist/cli.d.mts",
+    "bin": {
+        "build": "./bin/cli.js"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "dev": "tsdown --watch",
+        "build": "tsdown",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "prepublishOnly": "pnpm build",
+        "prepare": "simple-git-hooks",
+        "test": "tsx ./src/cli.ts build -p asd --workDir 111"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org",
+        "access": "public"
+    },
+    "dependencies": {
+        "@clack/prompts": "^1.7.0",
+        "citty": "^0.2.2",
+        "defu": "^6.1.7",
+        "find-up": "^8.0.0",
+        "glob": "^13.0.6",
+        "jiti": "^2.7.0"
+    },
+    "devDependencies": {
+        "@antfu/eslint-config": "^7.7.3",
+        "@lonewolfyx/tsconfig": "^0.0.6",
+        "@types/node": "^25.9.4",
+        "eslint": "^10.6.0",
+        "nano-staged": "^1.0.2",
+        "picocolors": "^1.1.1",
+        "simple-git-hooks": "^2.13.1",
+        "tsdown": "^0.22.3",
+        "tsdown-preset": "^1.0.6",
+        "tsx": "^4.23.0",
+        "typescript": "^5.9.3"
+    },
+    "simple-git-hooks": {
+        "pre-commit": "npx nano-staged",
+        "commit-msg": "node scripts/verify-commit.js"
+    },
+    "nano-staged": {
+        "*": "eslint --fix"
+    }
+}
